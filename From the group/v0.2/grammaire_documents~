@@ -1,0 +1,29 @@
+VALEUR: entier
+	| decimal
+	| string
+	| regexp
+	| 'null'
+	| 'true'
+	| 'false'
+	| 'MinKey'
+	| 'MaxKey'
+	| DOC_DON
+	| TAB_DOC
+	
+
+DOC_DON : '{' LIST_MEM '}'
+LIST_MEM: LIST_MEM_AUX | EPSILON
+LIST_MEM_AUX: PAIR LIST_MEM_AUX_AUX
+LIST_MEM_AUX_AUX: ',' LIST_MEM_AUX | EPSILON
+
+PAIR: CHAMP_DON ':' VALEUR
+
+TAB : '[' LIST_PARAM ']'
+
+
+/*
+VALEUR:	 'BinData' '(' byte, base64 )
+	| 'ObjectId' '(' '"' objectid '"' ')'
+	| 'ISODate' '(' '"' date|datetime '"' ')'
+	| 'Timestamp' '(' entier , entier ')'
+*/

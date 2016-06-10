@@ -1,0 +1,1 @@
+db.test.find({ismael:{$lte:10},hnia:"elina",lol:2})

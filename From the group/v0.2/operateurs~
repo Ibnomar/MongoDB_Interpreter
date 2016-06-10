@@ -1,0 +1,34 @@
+Opérateurs de sélection:
+
+	Opérateurs de comparaison
+
+    	$eq
+    	$gt
+    	$gte
+    	$lt
+    	$lte
+   	$ne
+    	$in
+    	$nin
+
+	Opérateurs logiques
+
+    	$or
+    	$and
+    	$not
+    	$nor
+
+	Opérateurs d'éléments
+
+    	$exists
+    	$type
+    
+Opérateurs de modification d'un champ:
+
+    $inc
+    $mul
+    $rename
+    $set
+    $unset
+    $min
+    $max

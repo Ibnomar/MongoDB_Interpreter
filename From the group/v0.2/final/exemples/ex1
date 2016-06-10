@@ -1,0 +1,34 @@
+db.personnes.insert(
+	{
+		identifiant:12,
+		titre:"ingenieur",
+		domicile:
+		{
+			pays:"Maroc",
+			ville:"Rabat",
+			type:"appartement"
+		},
+		enfants:
+		{
+			klkm:[
+				{
+					prenom:"omar",
+					sexe:"masculin",
+					age:13
+				},
+				{
+					prenom:"amina",
+					sexe:"feminin",
+					age:7
+				},
+				{
+					prenom:"yasmine",
+					sexe:"feminin",
+					age:17
+				}
+			]
+		}
+		}
+	
+     );
+

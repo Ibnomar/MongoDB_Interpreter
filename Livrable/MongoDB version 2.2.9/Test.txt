@@ -1,0 +1,2 @@
+use dba
+db.coll.remove({$and:[{pays : "maroc",annee : {$exists:false}}]})

@@ -1,0 +1,5 @@
+db.personnes.insert(
+	{
+		identifiant:12,
+		titre:"ingenieur"
+	});

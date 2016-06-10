@@ -1,0 +1,23 @@
+#ifndef ANALYSEUR_SYNTAXIQUE_H
+#define ANALYSEUR_SYNTAXIQUE_H
+#include "utile.h"
+typetoken _lire_token() ;
+
+boolean _PROG();
+boolean _LIST_COM();
+boolean _COM();
+boolean _COM_DB();
+boolean _COM_COL();
+boolean _PARAM_INSERT();
+
+boolean _DOC();
+boolean _LIST_PAIR();
+boolean _LIST_PAIR_AUX();
+boolean _LIST_PAIR_AUX_AUX();
+boolean _PAIR();
+boolean _VALEUR();
+boolean _TAB();
+boolean _LIST_VAL( );
+boolean _LIST_VAL_AUX( );
+boolean _LIST_VAL_AUX_AUX( );
+#endif

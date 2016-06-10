@@ -1,0 +1,2 @@
+use db1
+db.test.remove({root:1})

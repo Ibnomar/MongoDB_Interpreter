@@ -1,0 +1,6 @@
+db.ismael.find()
+db.ismael.update({ismael:94,ibnomar:true},{hajar : []})
+db.users.find( { $or : [{ismael:18}] ,  name: 1, address: 1 } )
+db.users.update({ $or : [{ismael:18}]} ,  {name: 1, address: 1 ,hajar : null} )
+db.conferenciers.insert({name: 1, address: 1 ,hajar : null})
+db.hola.find()

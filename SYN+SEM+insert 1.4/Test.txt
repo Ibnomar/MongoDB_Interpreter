@@ -1,0 +1,3 @@
+db.ismael.find({ismael:{sophia:0,root:2}})
+db.users.find( { $or : [{ismael:18}] ,  name: 1, address: 1 } )
+db.test.insert({name: [], fonction:[root,5,true,lol]})

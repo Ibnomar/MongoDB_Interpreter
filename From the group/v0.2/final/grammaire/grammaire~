@@ -1,0 +1,65 @@
+PROG : LIST_COM
+LIST_COM : COM ';' LIST_COM | EPSILON
+COM : 'db' '.' COM_DB
+
+COM_DB :  idf '.' COM_COL
+	| 'getCollectionNames' '(' ')'
+
+COM_COL : 'insert' '(' PARAM_INSERT ')'
+	| 'find' '(' FIND_AUX
+	| 'renameCollection' '(' PARAM_RENAME ')'
+	| 'drop' '(' ')'
+		  
+PARAM_INSERT : DOC
+
+FIND_AUX : ')'
+	| QUERY ')'
+
+PARAM_RENAME : idf
+
+DOC : '{' LIST_PAIR '}'
+LIST_PAIR : LIST_PAIR_AUX | EPSILON
+LIST_PAIR_AUX : PAIR LIST_PAIR_AUX_AUX
+LIST_PAIR_AUX_AUX : ',' LIST_PAIR_AUX | EPSILON
+
+PAIR : idf ':' VALEUR
+
+VALEUR : entier
+	| decimal
+	| string
+	| regexp
+	| 'null'
+	| 'true'
+	| 'false'
+	| 'MinKey'
+	| 'MaxKey'
+	| DOC
+	| TAB
+
+TAB : '[' LIST_VAL ']'
+LIST_VAL : LIST_VAL_AUX | EPSILON
+LIST_VAL_AUX : VALEUR LIST_VAL_AUX_AUX
+LIST_VAL_AUX_AUX : ',' LIST_VAL_AUX | EPSILON
+
+QUERY : EXP
+EXP : '{' EXP_AUX '}'
+EXP_AUX : '$or' ':' TAB_EXP
+	| '$and' ':' TAB_EXP
+	| EXP_ELEM
+	
+TAB_EXP : '[' LIST_EXP ']'
+LIST_EXP : LIST_EXP_AUX | EPSILON
+LIST_EXP_AUX : EXP LIST_EXP_AUX_AUX
+LIST_EXP_AUX_AUX : ',' LIST_EXP_AUX | EPSILON
+
+EXP_ELEM : idf ':' '{' EXP_ELEM_AUX '}'
+EXP_ELEM_AUX : OP_VAL ':' VALEUR
+	| OP_TAB ':' TAB
+OP_VAL : '$eq'
+	'$gt'
+    	'$gte'
+    	'$lt'
+    	'$lte'
+   	'$ne'
+OP_TAB : '$in'
+    	'$nin'

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="6" />
+			<Collapse line="13" />
+			<Collapse line="20" />
+			<Collapse line="25" />
+			<Collapse line="30" />
+			<Collapse line="49" />
+			<Collapse line="64" />
+			<Collapse line="75" />
+			<Collapse line="84" />
+			<Collapse line="122" />
+			<Collapse line="187" />
+			<Collapse line="191" />
+			<Collapse line="209" />
+			<Collapse line="223" />
+			<Collapse line="261" />
+			<Collapse line="272" />
+			<Collapse line="280" />
+			<Collapse line="293" />
+			<Collapse line="320" />
+			<Collapse line="330" />
+			<Collapse line="339" />
+			<Collapse line="372" />
+			<Collapse line="385" />
+			<Collapse line="394" />
+			<Collapse line="403" />
+			<Collapse line="415" />
+			<Collapse line="441" />
+			<Collapse line="450" />
+			<Collapse line="464" />
+			<Collapse line="473" />
+			<Collapse line="486" />
+			<Collapse line="492" />
+			<Collapse line="520" />
+			<Collapse line="525" />
+			<Collapse line="535" />
+			<Collapse line="541" />
+			<Collapse line="547" />
+			<Collapse line="595" />
+		</Folding>
+	</File>
+	<File name="insert.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="107" topLine="0" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>

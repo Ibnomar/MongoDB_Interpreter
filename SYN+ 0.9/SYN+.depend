@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1453509917 source:c:\users\ismael\c++ workspace\syn+\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+
+1453685333 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+

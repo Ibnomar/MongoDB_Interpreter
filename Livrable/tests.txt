@@ -1,0 +1,63 @@
+show dbs
+use dba
+db.coll.insert({ecole : "ensias",annee : 2016 , eleves : ["issac","ismael"] , etat : null})
+db.coll.insert({ecole : "ensias",annee : 2016 , eleves : ["hajar","sophia"] })
+db.coll.insert({pays : "maroc",capital :"rabat" , ecole : "ensias"})
+db.coll.insert({pays : "maroc",capital :"rabat" , ecole : "insea"})
+db.coll.insert({langue : "arabe" , tel : 06783567 })
+db.coll.insert({ecole : "iav"})
+db.coll.insert({ecole : "ehtp"})
+db.collection.insert({sport:"football" , equipe :"IRT" , annee:2016})
+db.collection.insert({sport:"basketball" , equipe :"MAT" , annee:2016})
+db.collec.insert({annee:2016})
+************************************************
+use dba
+show collections
+************************************************
+use dba
+db.createCollection("villes")
+************************************************
+use dba
+show collections
+************************************************
+use dba
+db.villes.drop()
+************************************************
+use dba
+show collections
+************************************************
+use database
+show dbs
+************************************************
+use database
+db.dropDataBase()
+************************************************
+show dbs
+***********************************************
+use dba
+db.coll.find({ecole:"ensias"})
+***********************************************
+use dba
+db.coll.find({$and:[{pays : "maroc",capital:"rabat"}]})
+************************************************
+use dba
+db.coll.find({$or:[{ecole : "iav",langue : "arabe"}]})
+**************************************************
+use dba
+db.coll.find({annee : {$eq:2016}})
+******************************************************
+use dba
+db.coll.find({annee : {$ne:2015}})
+******************************************************
+use dba
+db.coll.find({annee : {$exists:true}})
+******************************************************
+use dba
+db.coll.find({$and:[{pays : "maroc",annee : {$exists:false}}]})
+******************************************************
+use dba
+db.coll.remove({ecole:"iav"})
+******************************************************
+use dba
+db.coll.remove({$and:[{pays : "maroc",annee : {$exists:false}}]})
+

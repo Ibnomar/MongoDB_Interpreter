@@ -1,0 +1,18 @@
+PROG : LIST_COM
+LIST_COM : COM ';' LIST_COM | EPSILON
+COM : 'use' NOM_DB | 'show' 'dbs' | 'db' '.' COM_DB
+
+COM_DB : 'dropDatabase' '(' ')'
+	| 'createCollection' '(' PARAM_CREATE_COL ')'
+	| 'getCollectionNames' '(' ')'
+	| NOM_COL  '.' COM_COL
+
+COM_COL : 'insert' '(' PARAM_INSERT ')'
+	| 'find' '(' ')'
+	
+PARAM_CREATE_COL : '\'' NOM_COL '\''
+		  | '"' NOM_COL '"'
+		  
+PARAM_INSERT : TAB_DOC | DOC
+
+

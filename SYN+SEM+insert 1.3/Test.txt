@@ -1,0 +1,2 @@
+db.conferenciers.insert({ismael:khayeeb,sophia:hajar,q : 2 , b : true})
+db.conferenciers.insert({ismael:khayeeb,sophia:hajar,sophia:hajar,q : 2 , b : true})

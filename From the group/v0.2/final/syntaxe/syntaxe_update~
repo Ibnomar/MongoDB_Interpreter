@@ -1,0 +1,25 @@
+operateur:
+	$inc
+	$mul
+    	$rename
+    	$set
+    	$unset
+    	$min
+    	$max
+   
+update:
+	doc
+	{liste_modification}
+	
+	
+modification:
+	operateur :{ liste_des_paires }
+	
+{ $inc: { champ: entier ou décimal ou NumberLong } }
+{ $mul: { champ: entier ou décimal ou NumberLong }}
+{ $+: { champ : string }}
+{ $set: { champ : valeur }}
+{ $unset: { champ : "" }}
+{ $min: { champ: entier ou décimal ou NumberLong }}
+{ $max: { champ: entier ou décimal ou NumberLong }}
+

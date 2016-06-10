@@ -1,0 +1,71 @@
+#include "MyRI.h"
+
+Query *creer_Query(typeOpLogique opLog) {
+    Query *qu = (Query *) malloc(sizeof(Query));
+    qu->type = opLog;
+    return qu;
+}
+
+void ajouterQuery(Query *topQuery, Query_aux *query) {
+    if (topQuery->qAux == NULL)
+        topQuery->qAux = query;
+    else {
+        query->suivant = topQuery->qAux;
+        topQuery->qAux = query;
+    }
+}
+
+Query_aux *creerQueryAux(char *nom) {
+    Query_aux *qu = (Query_aux *) malloc(sizeof(Query_aux));
+    qu->suivant = NULL;
+    qu->nom = strdup(nom);
+    return qu;
+}
+
+Operation *creerOp(typeOpComparaison tOpComp) {
+    Operation *opp = (Operation *) malloc(sizeof(Operation));
+    opp->tOpComp = tOpComp;
+    opp->argList = NULL;
+    opp->suivant = NULL;
+    return opp;
+}
+
+void ajouterArg(Operation *opp, typeArgument tArg,char *nom) {
+    Argument *argument = (Argument *) malloc(sizeof(Argument));
+    if (tArg==tableau)
+        argument->argValue = strdup();// probleme
+    else
+        argument->argValue = strdup(nom);
+    argument->tArg = tArg;
+    argument->suivant = NULL;
+    if (opp->argList == NULL) {
+        opp->argList = argument;
+    }
+    else {
+        argument->suivant = opp->argList;
+        opp->argList = argument;
+    }
+}
+
+void ajouterOp(Query_aux *query, Operation *opp) {
+    if (query->Op == NULL) {
+        query->Op = opp;
+        opp->suivant = NULL;
+    }
+    else {
+        opp->suivant = query->Op;
+        query->Op = opp;
+    }
+}
+
+void afficherTop(Query *query) {
+    printf("%d\n", query->type);
+    while (query->qAux) {
+        printf("%s\n", query->qAux->nom);
+        while (query->qAux->Op) {
+            printf("%d\n", query->qAux->Op->tOpComp);
+            query->qAux->Op = query->qAux->Op->suivant;
+        }
+        query->qAux = query->qAux->suivant;
+    }
+}

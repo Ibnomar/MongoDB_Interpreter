@@ -1,0 +1,15 @@
+
+//gestion des bases de données
+use database
+db.dropDatabase()
+show dbs
+
+//gestion des collections
+db.createCollection(name)	
+db.collection.renameCollection(target)
+db.collection.drop()
+db.getCollectionNames()
+
+//gestion des documents
+db.collection.insert( document or array of documents)
+db.collection.find()

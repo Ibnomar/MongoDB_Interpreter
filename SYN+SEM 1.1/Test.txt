@@ -1,0 +1,1 @@
+db.ismael.find({string:{name:1}})

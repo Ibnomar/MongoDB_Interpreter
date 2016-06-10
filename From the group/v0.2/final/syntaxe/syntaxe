@@ -1,0 +1,39 @@
+
+db.collection.insert(document)
+elle permet d'insérer un document dans une collection enregistrée sur le disque
+
+db.collection.find()
+elle permet de lire tous les documents de la collection et les afficher
+
+db.collection.find(query)
+elle permet de filtrer les documents à l'aide de d'une requête query
+
+db.collection.renameCollection(target)
+elle permet de modifier le nom d'une collection
+
+db.collection.drop()
+elle permet de supprimer le nom d'une collection
+
+db.getCollectionNames()
+elle permet de retourner la liste des collections de la base de donnée
+	
+query:
+	expression
+
+expression:
+	$or tableau_expressions
+	$and tableau_expressions
+	expression_elementaire
+
+expression_elementaire:
+	{ champ : { operateur_comparaison : valeur ou tableau }}
+
+operateur_comparaison:
+	$eq
+    	$gt
+    	$gte
+    	$lt
+    	$lte
+   	$ne
+    	$in
+    	$nin

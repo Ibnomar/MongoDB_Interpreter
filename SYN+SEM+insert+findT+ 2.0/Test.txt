@@ -1,0 +1,2 @@
+db.test.find({$nor:[{ismael:{$exists:false},hajar:{$exists:true},lol:2}]})
+db.test.remove({lol:2})

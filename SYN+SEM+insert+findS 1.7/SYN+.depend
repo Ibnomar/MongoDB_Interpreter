@@ -1,0 +1,108 @@
+# depslib dependency file v1.0
+1453509917 source:c:\users\ismael\c++ workspace\syn+\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+
+1453818764 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+
+1454366004 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem 1.3\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+
+1454434714 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.5\find.c
+	"find.h"
+	<string.h>
+
+1454432175 c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.5\find.h
+
+1454434415 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.5\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+	"find.h"
+
+1454458965 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.6\find.c
+	"find.h"
+	<string.h>
+
+1454458232 c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.6\find.h
+
+1454458547 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.6\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+	"find.h"
+	"interpreter.h"
+
+1454460669 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.6\interpreter.c
+	<string.h>
+	<stdio.h>
+	"find.h"
+
+1454449866 c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert 1.6\interpreter.h
+	<string.h>
+	<stdio.h>
+
+1454458965 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.6\find.c
+	"find.h"
+	<string.h>
+
+1454458232 c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.6\find.h
+
+1454467477 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.6\interpreter.c
+	<string.h>
+	<stdio.h>
+	"find.h"
+
+1454468037 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.6\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+	"find.h"
+	"interpreter.h"
+
+1454449866 c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.6\interpreter.h
+	<string.h>
+	<stdio.h>
+
+1454458965 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.7\find.c
+	"find.h"
+	<string.h>
+
+1454475917 c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.7\find.h
+
+1454478600 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.7\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<sys/stat.h>
+	"find.h"
+	"interpreter.h"
+
+1454449866 c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.7\interpreter.h
+	<string.h>
+	<stdio.h>
+
+1454478713 source:c:\users\ismael\desktop\mes projets\mongodb\syn+sem+insert+finds 1.7\interpreter.c
+	<string.h>
+	<stdio.h>
+	"find.h"
+

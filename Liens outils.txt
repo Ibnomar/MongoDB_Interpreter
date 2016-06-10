@@ -1,0 +1,2 @@
+https://www.reddit.com/r/mongodb/comments/wl71m/mongodb_query_language_bnf/
+https://github.com/mongodb-js/mongodb-language-model/blob/master/docs/bnf.md

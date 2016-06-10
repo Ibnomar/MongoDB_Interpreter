@@ -1,0 +1,2 @@
+use dba
+db.coll.find({annee : {$exists:true}})

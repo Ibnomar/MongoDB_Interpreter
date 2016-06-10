@@ -1,0 +1,542 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include <sys/stat.h>
+
+typedef enum {
+DB_TOKEN, FIND_TOKEN, INSERT_TOKEN, UPDATE_TOKEN,  STRING_TOKEN,NUM_TOKEN,  TRUE_TOKEN,
+ FALSE_TOKEN, NULL_TOKEN, ACO_TOKEN, ACF_TOKEN, MO_TOKEN, MF_TOKEN, DEUXP_TOKEN, VIRG_TOKEN, POINT_TOKEN, ERREUR_TOKEN,
+ PARO_TOKEN, PARF_TOKEN, IDF_TOKEN, EQ_TOKEN, GTE_TOKEN, GT_TOKEN, LTE_TOKEN, LT_TOKEN, NE_TOKEN, NOT_TOKEN, EXISTS_TOKEN,
+ IN_TOKEN, NIN_TOKEN, AND_TOKEN, OR_TOKEN, NOR_TOKEN, FIN_TOKEN
+             } CODES_LEX;
+
+typedef enum {
+DB_ERR, POINT_ERR,FIND_ERR ,PARO_ERR, PARF_ERR, ACO_ERR, ACF_ERR, INSERT_ERR, UPDATE_ERR, VIRG_ERR, DEUXP_ERR, STRING_ERR,
+VALEUR_ERR, QUERY_ERR, QUERYAUX_ERR, LISTE_QUERYAUX_ERR, QAUX_ERR, QAUX_IN_ERR, VALEUR_AUX_ERR, QAUX3VIRG_ERR, QUERY_LOGICAL_ERR,
+MF_ERR, TABLEAU_ERR, PAIRE_AUX_ERR, QUERY_COMPARAISON_ERR,MO_ERR, BOOLEAN_ERR, EXISTS_ERR, Q_ERR, QAUX3_ERR,INST_ERR
+,QAUX5_ERR
+             }Erreurs;
+
+typedef struct Erreur {
+    Erreurs CODE_ERR;
+    char message[40];
+                      }Erreur;
+
+typedef struct Tsym_cour{
+              CODES_LEX code;
+              char nom[20];
+                        }Tsym_cour;
+
+char car_cour;
+Tsym_cour sym_cour;
+int ER=0;
+FILE *file=NULL;
+
+//Erreur MES_ERR[200]={{,""}};
+
+int i,a=0,n=1;
+
+CODES_LEX COD_CAR_SPE [100]= {{DB_TOKEN,"db"},{FIND_TOKEN,"find"},{INSERT_TOKEN,"insert"},
+{UPDATE_TOKEN,"update"},{STRING_TOKEN,"string"},{FALSE_TOKEN,"false"},
+{TRUE_TOKEN,"true"},{NULL_TOKEN,"null"},{ACO_TOKEN,"{"},{ACF_TOKEN,"}"},{MO_TOKEN,"["},{MF_TOKEN,"]"},
+{DEUXP_TOKEN,":"},{VIRG_TOKEN,","},{POINT_TOKEN,"."},{PARO_TOKEN,"("},{PARF_TOKEN,")"},{EQ_TOKEN,"="},
+{GTE_TOKEN,"$gte"},{GT_TOKEN,"$gt"},{LTE_TOKEN,"$lte"},{LT_TOKEN,"$lt"},{NE_TOKEN,"$ne"},
+{NOT_TOKEN,"$not"},{EXISTS_TOKEN,"$exists"},{IN_TOKEN,"$in"},{NIN_TOKEN,"$nin"},{AND_TOKEN,"$and"},
+{OR_TOKEN,"$or"},{NOR_TOKEN,"$nor"}
+};
+//ktar mafiyash db ndir printfat :p
+void Error(Erreurs COD_ERR){
+ER++;
+if(ER==1){printf("Ligne: %d - \"%s\"\t",n,sym_cour.nom);
+switch(COD_ERR){
+    case QAUX5_ERR : printf("Erreur : ',' ou '}' manquante \n");break;
+    case QAUX3_ERR : printf("Erreur : ',' ou ']' manquante \n");break;
+    case Q_ERR : printf("Erreur : Valeur invalide ou '{' manquante \n");break;
+    case EXISTS_ERR : printf("Erreur : Expression exist invalide \n");break;
+    case MO_ERR : printf("Erreur : ' [ ' non trouve \n");break;
+    case QUERY_COMPARAISON_ERR: printf("Erreur : Expression de comparaison invalide \n");break;
+    case PAIRE_AUX_ERR : printf("Erreur : Verifier la syntaxe des paires \n");break;
+    case TABLEAU_ERR : printf("Erreur : Tableau invalide \n");break;
+    case MF_ERR : printf("Erreur : ' ] ' non trouve \n");break;
+    case QUERY_LOGICAL_ERR : printf("Erreur : Requete logique invalide \n");break;
+    case QAUX3VIRG_ERR : printf("Erreur : Valeur invalide ou '{' manquante \n");break;
+    case VALEUR_AUX_ERR : printf("Erreur : Verifier la fin de la requete ' , ou ] ' \n");break;
+    case QAUX_IN_ERR : printf("Erreur : Valeur invalide ou } manquante \n");break;
+    case QAUX_ERR : printf("Erreur : Verifier la fin de la requete ' , ou } ' \n");break;
+    case LISTE_QUERYAUX_ERR : printf("Erreur :  Liste des requetes invalide ! Attention à la virgule\n");break;
+    case QUERYAUX_ERR : printf("Erreur : Requete invalide  \n");break;
+    case QUERY_ERR : printf("Erreur : Requete invalide\n");break;
+    case VALEUR_ERR : printf("Erreur : Valeur invalide \n");break;
+    case ACF_ERR : printf("Erreur : ' } ' non trouvé \n");break;
+    case STRING_ERR : printf("Erreur : Identifiant non trouvé \n");break;
+    case DEUXP_ERR : printf("Erreur : ' : ' non trouvé \n");break;
+    case VIRG_ERR : printf("Erreur : ' , ' non trouvé \n");break;
+    case ACO_ERR : printf("Erreur : ' { ' non trouvé \n");break;
+    case PARF_ERR : printf("Erreur : ' ) ' non trouvé \n");break;
+    case PARO_ERR : printf("Erreur : ' ( ' non trouvé \n");break;
+    case INST_ERR : printf("Erreur : Début d'instruction \n");break;
+    case POINT_ERR : printf("Erreur : Point non trouvé \n");break;
+    case DB_ERR : printf("Erreur : 'db' non trouvé \n");break;
+    default : printf("Erreur : ERREUR NON SYNTAXIQUE\n\t\t\t   \n");break;
+               }
+         }
+                          }
+
+void cmp_mot(){
+        if ( !strcmp(sym_cour.nom,"db") ){ sym_cour.code=DB_TOKEN;
+        }
+ else       if ( !strcmp(sym_cour.nom,"find")  ) { sym_cour.code=FIND_TOKEN;
+                }
+ else       if ( !strcmp(sym_cour.nom,"insert")  ) { sym_cour.code=INSERT_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"update") ) { sym_cour.code=UPDATE_TOKEN;
+ }
+
+ else       if ( !strcmp(sym_cour.nom,"true") ) { sym_cour.code=TRUE_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"false") ) { sym_cour.code=FALSE_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"null") ) { sym_cour.code=NULL_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"{") ) { sym_cour.code=ACO_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"}") ) { sym_cour.code=ACF_TOKEN;
+ }
+else       if ( !strcmp(sym_cour.nom,"[") ) { sym_cour.code=MO_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"]") ) { sym_cour.code=MF_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,":") ) { sym_cour.code=DEUXP_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,",") ) { sym_cour.code=VIRG_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"(") ) { sym_cour.code=PARO_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,")") ) { sym_cour.code=PARF_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$eq") ) { sym_cour.code=EQ_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$gte") ) { sym_cour.code=GTE_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$gt") ) { sym_cour.code=GT_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$lte") ) { sym_cour.code=LTE_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$lt") ) { sym_cour.code=LT_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$ne") ) { sym_cour.code=NE_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$not") ) { sym_cour.code=NOT_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$exists") ) { sym_cour.code=EXISTS_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$in") ) { sym_cour.code=IN_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$nin") ) { sym_cour.code=NIN_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$and") ) { sym_cour.code=AND_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$or") ) { sym_cour.code=OR_TOKEN;
+ }
+ else       if ( !strcmp(sym_cour.nom,"$nor") ) { sym_cour.code=NOR_TOKEN;
+ }
+
+ else {sym_cour.code=STRING_TOKEN;
+
+      }
+    }
+
+
+void lire_car(){
+car_cour=fgetc(file);
+}
+
+void lire_mot(){
+int a=0;
+if(car_cour=='$'){
+    sym_cour.nom[a]=car_cour;lire_car();
+    a++;
+}
+while(a<20){
+if(isalpha(car_cour)||isdigit(car_cour)){
+            sym_cour.nom[a]= car_cour;
+            lire_car();}
+else{
+sym_cour.nom[a]='\0';return;
+}
+a++;
+}
+i=a;
+}
+
+void lire_num(){
+int a=0;
+while(a<20){
+if(isdigit(car_cour)){
+            sym_cour.nom[a]= car_cour;
+            lire_car();}
+else{
+sym_cour.nom[a]='\0';return;
+}
+a++;
+}
+i=a;
+}
+
+void sym_suiv(){
+
+    int c=0;
+    while(car_cour==' ' || car_cour=='\t' || car_cour=='\n'){
+                if(car_cour=='\n')n++;lire_car();
+                                                            }
+    while(c<20){sym_cour.nom[c]='\0';c++;}
+
+    if( isalpha(car_cour) || car_cour == '$' ) {
+        lire_mot();
+        cmp_mot();
+        return;
+                          }
+
+    else {
+       if(isdigit(car_cour)){
+        lire_num();
+        sym_cour.code=NUM_TOKEN;
+        return;
+                            }
+
+       else{
+    switch(car_cour) {
+        case ':': sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=DEUXP_TOKEN; lire_car();break;
+        case '{': sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=ACO_TOKEN; lire_car();break;
+        case '}': sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=ACF_TOKEN; lire_car();break;
+        case '[': sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=MO_TOKEN; lire_car();break;
+        case ']': sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=MF_TOKEN; lire_car();break;
+        case ',':sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=VIRG_TOKEN; lire_car();break;
+        case '.':sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=POINT_TOKEN; lire_car();break;
+        case '(':sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=PARO_TOKEN; lire_car();break;
+        case ')':sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=PARF_TOKEN; lire_car();break;
+        case EOF: sym_cour.code=FIN_TOKEN; lire_car(); break;
+        default : sym_cour.nom[0]=car_cour;sym_cour.nom[1]='\0';sym_cour.code=ERREUR_TOKEN;lire_car(); break;
+        }
+    }
+}
+}
+void open_file(char const* cible){
+
+file=fopen(cible,"r");
+if (file==NULL)
+ {printf("Erreur : Fichier introuvable!\n");}
+else
+{a=1;
+printf("\n");
+  }
+  }
+
+void Test_Symbole(CODES_LEX cl, Erreurs CODE_ERR){
+
+
+if (sym_cour.code == cl)  {
+        sym_suiv();
+}
+else  { Error(CODE_ERR);sym_suiv();}
+}
+void QUERY(){
+
+    //query-----------------> { queryAux } | epsilon
+    // Follow (query) = {',',']'}
+    switch (sym_cour.code){
+         case ACO_TOKEN : sym_suiv(); QUERYAUX();Test_Symbole(ACF_TOKEN,ACF_ERR);break;
+         case VIRG_TOKEN : break;
+         case MF_TOKEN : break;
+         case PARF_TOKEN : break;
+         default : Error(QUERY_ERR);  break;
+                          }
+
+            }
+void QUERYAUX(){
+//queryAux -------------> string : Q QAux | query_logical : [ list_query] QAux | epsilon
+//Follow (queryaux) = {'}'}
+             switch (sym_cour.code){
+                 case STRING_TOKEN : sym_suiv();Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);Q();QAUX();break;
+                 case OR_TOKEN     : QUERY_LOGICAL();
+                                     Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);
+                                     Test_Symbole(MO_TOKEN,ACO_ERR);
+                                     LISTE_QUERY();
+                                     Test_Symbole(MF_TOKEN,ACF_ERR);
+                                     QAUX();break;
+                case AND_TOKEN     : QUERY_LOGICAL();
+                                     Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);
+                                     Test_Symbole(MO_TOKEN,ACO_ERR);
+                                     LISTE_QUERY();
+                                     Test_Symbole(MF_TOKEN,ACF_ERR);
+                                     QAUX();break;
+                case NOR_TOKEN     : QUERY_LOGICAL();
+                                     Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);
+                                     Test_Symbole(MO_TOKEN,ACO_ERR);
+                                     LISTE_QUERY();
+                                     Test_Symbole(MF_TOKEN,ACF_ERR);
+                                     QAUX();break;
+               case ACF_TOKEN      : break;
+               default : Error(QUERYAUX_ERR);  break;
+                                     }
+               }
+void QAUX(){
+    //QAux -----------------> ,queryAux | epsilon
+    //Follow (QAux) ={'}'}
+    switch(sym_cour.code){
+    case VIRG_TOKEN : sym_suiv(); QUERYAUX();break;
+    case ACF_TOKEN : break;
+    default : Error(QAUX_ERR);  break;
+
+                         }
+           }
+void LISTE_QUERYAUX(){
+    //liste_queryAux -------> ,list-query | epsilon
+    //Follow (liste_queryAux) = {']'}
+    switch (sym_cour.code){
+        case VIRG_TOKEN : LISTE_QUERY();break;
+        case MF_TOKEN : break;
+        default : Error(LISTE_QUERYAUX_ERR);  break;
+                          }
+                     }
+void QAUX4(){
+    //QAux4----------------->  QAux2 Qaux5 | Membres | epsilon
+
+//                        | $exists : true | false
+//                        | $in : [ quaux_in ]
+//                        | $not : {query-comparaison : valeur}
+//Follow (QAux4) = {'}'}
+switch (sym_cour.code){
+    case  NOT_TOKEN : sym_suiv(); Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);
+                    Test_Symbole(ACO_TOKEN,ACO_ERR);QUERY_COMPARAISON();
+                    Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);VALEUR();
+                    Test_Symbole(ACF_TOKEN,ACF_ERR);break;
+    case IN_TOKEN : sym_suiv(); Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);Test_Symbole(MO_TOKEN,MO_ERR); QAUX_IN();
+                     Test_Symbole(MF_TOKEN,MF_ERR);break;
+    case EXISTS_TOKEN : sym_suiv(); Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);sym_suiv();
+         switch (sym_cour.code){
+             case TRUE_TOKEN : break;
+             case FALSE_TOKEN : break;
+             default : Error(EXISTS_ERR);
+                               }
+
+    case ACF_TOKEN : break; // QAux2 Qaux5 | Membres | epsilon
+    case EQ_TOKEN : QAUX2();QAUX5();break;
+    case GT_TOKEN : QAUX2();QAUX5();break;
+    case GTE_TOKEN : QAUX2();QAUX5();break;
+    case LT_TOKEN : QAUX2();QAUX5();break;
+    case LTE_TOKEN : QAUX2();QAUX5();break;
+    case NE_TOKEN : QAUX2();QAUX5();break;
+    case STRING_TOKEN : MEMBRES();
+
+                      }
+
+}
+void Q(){
+    //Q---------------------> { QAux4 }| valeur
+    switch (sym_cour.code){
+          case ACO_TOKEN : sym_suiv(); QAUX4(); Test_Symbole(ACF_TOKEN,ACF_ERR);
+          case STRING_TOKEN : sym_suiv(); break;
+          case NUM_TOKEN : sym_suiv(); break;
+          case MO_TOKEN : sym_suiv(); break;
+          case TRUE_TOKEN : sym_suiv(); break;
+          case FALSE_TOKEN : sym_suiv(); break;
+          case NULL_TOKEN : sym_suiv(); break;
+          default : Error(Q_ERR);
+                          }
+        }
+void QAUX5(){
+    //QAux5----------------->,QAux2 Qaux5 | epsilon
+    //Follow (qaux5) = {'}'}
+    switch (sym_cour.code){
+        case VIRG_TOKEN: QAUX2();QAUX5();break;
+        case ACF_TOKEN : break;
+        default : Error(QAUX5_ERR);
+                          }
+            }
+void QAUX3(){
+    //QAux3 ----------------> ,qaux3virg | epsilon
+    // Follow (QAux3) = {']'}
+switch(sym_cour.code){
+    case VIRG_TOKEN : QAUX3VIRG(); break;
+    case MF_TOKEN : break;
+    default : Error(QAUX3_ERR);
+                     }
+}
+void QUERY_COMPARAISON(){
+//query_comparaison ------> $eq| $gt| $gte| $lt| $lte| $ne
+switch (sym_cour.code){
+    case EQ_TOKEN : sym_suiv();break;
+    case GT_TOKEN : sym_suiv();break;
+    case GTE_TOKEN : sym_suiv();break;
+    case LT_TOKEN : sym_suiv(); break;
+    case LTE_TOKEN : sym_suiv();break;
+    case NE_TOKEN : sym_suiv();break;
+    default : Error(QUERY_COMPARAISON_ERR);
+                      }
+                        }
+void TABLEAU(){
+    switch(sym_cour.code){
+        //Tableau : [ ] | [ Elements ]
+        case MO_TOKEN: sym_suiv();
+                switch(sym_cour.code){
+                    case MF_TOKEN: sym_suiv();break ;
+                    case STRING_TOKEN :  /*sym_suiv();A VERIFIER*/ ELEMENTS();Test_Symbole(MF_TOKEN,MF_ERR);break;
+                    case NUM_TOKEN : ELEMENTS();Test_Symbole(MF_TOKEN,MF_ERR);break;
+                    case MO_TOKEN :  ELEMENTS();Test_Symbole(MF_TOKEN,MF_ERR);break;
+                    case TRUE_TOKEN :  ELEMENTS();Test_Symbole(MF_TOKEN,MF_ERR);break;
+                    case FALSE_TOKEN :  ELEMENTS();Test_Symbole(MF_TOKEN,MF_ERR);break;
+                    case NULL_TOKEN :  ELEMENTS();Test_Symbole(MF_TOKEN,MF_ERR);break;
+                    default : Error(TABLEAU_ERR);
+                                     }break;
+        default : Error(TABLEAU_ERR);
+                         }
+              }
+void PAIRE_AUX(){
+  //  Paire_Aux : , Membres | epsilon
+    //Follow (Paire_Aux) = { '}' }
+    switch(sym_cour.code){
+        case VIRG_TOKEN: sym_suiv();MEMBRES();break;
+        case ACF_TOKEN: break;
+        default: Error(PAIRE_AUX_ERR);break;
+                         }
+                }
+void QUERY_LOGICAL(){
+    //query_logical ----------> $or | $and | $nor
+    switch(sym_cour.code){
+        case OR_TOKEN : sym_suiv();break;
+        case AND_TOKEN : sym_suiv();break;
+        case NOR_TOKEN : sym_suiv();break;
+        default : Error(QUERY_LOGICAL_ERR);
+                         }
+                    }
+void QAUX3VIRG(){
+    //qaux3virg ------------> valeur QAux3 | {Membres} QAux3
+    switch(sym_cour.code){
+                case STRING_TOKEN :  sym_suiv();VALEUR();QAUX3();break;
+                case NUM_TOKEN :  sym_suiv();VALEUR();QAUX3();break;
+                case MO_TOKEN :  TABLEAU();VALEUR();QAUX3();break;
+                case TRUE_TOKEN :  sym_suiv();VALEUR();QAUX3();break;
+                case FALSE_TOKEN :  sym_suiv();VALEUR();QAUX3();break;
+                case NULL_TOKEN :  sym_suiv();VALEUR();QAUX3();break;
+                case ACO_TOKEN : sym_suiv(); MEMBRES();
+                 Test_Symbole(ACF_TOKEN,ACF_ERR); QAUX3();break;
+                default:  Error(QAUX3VIRG_ERR)  ;break;
+                         }
+                 }
+void VALEUR_AUX(){
+      //Valeur_Aux : , Elements | epsilon
+    // Follow (Valeur_Aux)={ ']' }
+    switch (sym_cour.code){
+        case VIRG_TOKEN : sym_suiv(); ELEMENTS(); break;
+        case MF_TOKEN : break;
+        default : Error(VALEUR_AUX_ERR);
+                          }
+                 }
+void QAUX_IN(){
+    //quaux_in--------------> valeur QAux3 | {Membres} QAux3
+    switch(sym_cour.code){
+                case STRING_TOKEN : sym_suiv(); VALEUR();QAUX3();break;
+                case NUM_TOKEN : sym_suiv(); VALEUR();QAUX3();break;
+                case MO_TOKEN : sym_suiv(); VALEUR();QAUX3();break;
+                case TRUE_TOKEN : sym_suiv(); VALEUR();QAUX3();break;
+                case FALSE_TOKEN : sym_suiv(); VALEUR();QAUX3();break;
+                case NULL_TOKEN : sym_suiv();VALEUR();QAUX3();break;
+                case ACF_TOKEN : sym_suiv();MEMBRES(); Test_Symbole(ACO_TOKEN,ACO_ERR);QAUX3();break;
+                default : Error(QAUX_IN_ERR);
+                         }
+              }
+void QAUX2(){
+//QAux2 ----------------> query_comparaison : valeur
+QUERY_COMPARAISON();
+Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);
+VALEUR();
+            }
+void VALEUR(){
+    // Valeur : string|num|tableau|true|false|null
+switch   (sym_cour.code) {
+                case STRING_TOKEN :  sym_suiv();break;
+                case NUM_TOKEN :  sym_suiv();break;
+                case MO_TOKEN :  TABLEAU();break;
+                case TRUE_TOKEN :  sym_suiv();break;
+                case FALSE_TOKEN :  sym_suiv();break;
+                case NULL_TOKEN :  sym_suiv();break;
+                default:  Error(VALEUR_ERR) ; break;     }
+             }
+void MEMBRES (){
+    //Membres : Paire Paire_Aux
+    PAIRE();
+    PAIRE_AUX();
+               }
+void PAIRE(){
+    //Paire : string : Valeur
+    Test_Symbole(STRING_TOKEN,STRING_ERR);
+    Test_Symbole(DEUXP_TOKEN,DEUXP_ERR);
+    VALEUR();
+            }
+void ELEMENTS(){
+     //Elements : Valeur Valeur_Aux
+              VALEUR();
+              VALEUR_AUX();
+               }
+void UPDATE(){
+//Update :DB.string.UPDATE(query,{Membres})
+
+QUERY();
+Test_Symbole(VIRG_TOKEN,VIRG_ERR);
+Test_Symbole(ACO_TOKEN,ACO_ERR);
+MEMBRES();
+Test_Symbole(ACF_TOKEN,ACF_ERR);
+}
+void LISTE_QUERY(){
+    //liste_query ----------> query liste_queryAux
+    QUERY();
+    LISTE_QUERYAUX();
+                  }
+//insts : inst instsaux
+void insts (){
+inst();
+instaux();
+}
+
+//instsaux : insts | epsilon
+void instaux(){
+    switch(sym_cour.code){
+        case DB_TOKEN : insts(); break;
+        case FIN_TOKEN : sym_suiv(); break;
+    default : Error(INST_ERR) ; break;
+
+    }
+}
+//inst : db . string . instaux
+void inst(){
+Test_Symbole(DB_TOKEN,DB_ERR);
+Test_Symbole(POINT_TOKEN,POINT_ERR);
+Test_Symbole(STRING_TOKEN,STRING_ERR);
+Test_Symbole(POINT_TOKEN,POINT_ERR);
+    switch(sym_cour.code){
+        case FIND_TOKEN : sym_suiv(); Test_Symbole(PARO_TOKEN,PARO_ERR);QUERY();break;
+        case UPDATE_TOKEN : sym_suiv(); Test_Symbole(PARO_TOKEN,PARO_ERR);UPDATE();break;
+        case INSERT_TOKEN :sym_suiv(); Test_Symbole(PARO_TOKEN,PARO_ERR);INSERT();break;
+        default :  Error(INST_ERR) ; break;
+    }
+Test_Symbole(PARF_TOKEN,PARF_ERR);
+}
+
+void INSERT(){
+ //Insert : DB . string . INSERT ({Membres})
+Test_Symbole(ACO_TOKEN,ACO_ERR);
+MEMBRES();
+Test_Symbole(ACF_TOKEN,ACF_ERR);
+             }
+
+int main(int argc,char** argv){
+open_file("Test.txt");
+car_cour=getc(file);
+sym_suiv();
+insts();
+    return 0;
+}
+
+

@@ -1,0 +1,7 @@
+db.personnes.insert(
+	{
+		identifiant:12
+	}
+	
+     );
+
